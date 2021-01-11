@@ -1,6 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status, viewsets
+from rest_framework import status, viewsets, filters
 from .serializers import HelloSerializer
 from rest_framework.authentication import TokenAuthentication
 
@@ -96,7 +96,12 @@ class HelloViewSet(viewsets.ViewSet):
 class UserProfileViewset(viewsets.ModelViewSet):
     """ Handle creating and updating profiles """
     serializer_class = serializers.UserProfileSerializer
+
     # with queryset, we don't have to setup basename in urls
     queryset = models.UserProfile.objects.all()
     authentication_classes = (TokenAuthentication,)
     permission_classes = (permissions.UpdateOwnProfile,)
+
+    # adding search query filter
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('name', 'email',)
